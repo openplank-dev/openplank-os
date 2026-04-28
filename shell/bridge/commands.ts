@@ -149,6 +149,62 @@ const COMMANDS: CommandPattern[] = [
   },
 
   // ============================================
+  // AR / Brille / Glasses
+  // ============================================
+  {
+    patterns: [
+      /(?:zeig|show)\s+(?:das|es|it|this)?\s*(?:auf|on)\s+(?:der|the)?\s*(?:brille|glasses|ar|headset)/i,
+      /(?:auf|on)\s+(?:die|the)?\s*brille(?:\s+damit)?/i,
+      /(?:project|projizier)\s+(?:das|es|it|this)?\s*(?:in\s+ar|auf\s+(?:die\s+)?brille)/i,
+    ],
+    extract: () => ({
+      type: 'move-to-viewport',
+      widgetId: '__focused__',
+      viewport: 'ar',
+    }),
+  },
+  {
+    patterns: [
+      /(?:nimm|take|entfern)\s+(?:das|es|it|this)?\s*(?:von|from)\s+(?:der|the)?\s*(?:brille|glasses|ar)/i,
+      /(?:weg|off)\s+(?:von\s+)?(?:der\s+)?(?:brille|glasses)/i,
+    ],
+    extract: () => ({
+      type: 'move-to-viewport',
+      widgetId: '__focused__',
+      viewport: 'desktop',
+    }),
+  },
+  {
+    patterns: [
+      /(?:timer|stoppuhr)\s+(\d+)\s*(?:min(?:uten)?|sek(?:unden)?|s|m)?/i,
+    ],
+    extract: (match) => ({
+      type: 'ar-hud',
+      element: 'timer',
+      data: { duration: parseInt(match[1]), unit: match[2] || 'min' },
+    }),
+  },
+  {
+    patterns: [
+      /(?:notiz|note|merke?)\s*:?\s+(.+)/i,
+    ],
+    extract: (match) => ({
+      type: 'ar-hud',
+      element: 'notification',
+      data: { title: 'Notiz', text: match[1] },
+    }),
+  },
+  {
+    patterns: [
+      /(?:screenshot|foto|capture|aufnahme)/i,
+    ],
+    extract: () => ({
+      type: 'screenshot',
+      viewport: 'current',
+    }),
+  },
+
+  // ============================================
   // Resize / Größe
   // ============================================
   {
