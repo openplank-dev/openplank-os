@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<!--
+    org.openplank.KiDE — D-Bus Interface
+    
+    KI Desktop Environment control interface.
+    Allows the KI Bridge to control the desktop compositor,
+    manage widgets, viewports, and voice commands.
+-->
+
+<node>
+    <!-- Widget Management -->
+    <interface name="org.openplank.KiDE.Widgets">
+        <method name="Create">
+            <arg type="s" name="widgetType" direction="in"/>
+            <arg type="s" name="configJson" direction="in"/>
+            <arg type="s" name="widgetId" direction="out"/>
+        </method>
+        <method name="Destroy">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="Update">
+            <arg type="s" name="widgetId" direction="in"/>
+            <arg type="s" name="propsJson" direction="in"/>
+        </method>
+        <method name="Focus">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="List">
+            <arg type="s" name="widgetsJson" direction="out"/>
+        </method>
+        <signal name="Created">
+            <arg type="s" name="widgetId"/>
+            <arg type="s" name="widgetType"/>
+        </signal>
+        <signal name="Destroyed">
+            <arg type="s" name="widgetId"/>
+        </signal>
+    </interface>
+
+    <!-- Viewport Management -->
+    <interface name="org.openplank.KiDE.Viewports">
+        <method name="List">
+            <arg type="s" name="viewportsJson" direction="out"/>
+        </method>
+        <method name="MoveWidget">
+            <arg type="s" name="widgetId" direction="in"/>
+            <arg type="s" name="viewportId" direction="in"/>
+        </method>
+        <method name="SetLayout">
+            <arg type="s" name="viewportId" direction="in"/>
+            <arg type="s" name="layoutJson" direction="in"/>
+        </method>
+        <signal name="Connected">
+            <arg type="s" name="viewportId"/>
+            <arg type="s" name="displayInfo"/>
+        </signal>
+        <signal name="Disconnected">
+            <arg type="s" name="viewportId"/>
+        </signal>
+    </interface>
+
+    <!-- KI Bridge -->
+    <interface name="org.openplank.KiDE.Bridge">
+        <method name="Execute">
+            <arg type="s" name="commandJson" direction="in"/>
+            <arg type="b" name="success" direction="out"/>
+        </method>
+        <method name="NaturalLanguage">
+            <arg type="s" name="text" direction="in"/>
+            <arg type="s" name="responseJson" direction="out"/>
+        </method>
+        <signal name="CommandExecuted">
+            <arg type="s" name="commandJson"/>
+        </signal>
+    </interface>
+
+    <!-- Voice Control -->
+    <interface name="org.openplank.KiDE.Voice">
+        <method name="StartListening"/>
+        <method name="StopListening"/>
+        <method name="Speak">
+            <arg type="s" name="text" direction="in"/>
+        </method>
+        <property name="IsListening" type="b" access="read"/>
+        <signal name="SpeechRecognized">
+            <arg type="s" name="text"/>
+        </signal>
+    </interface>
+
+    <!-- Theme -->
+    <interface name="org.openplank.KiDE.Theme">
+        <method name="Set">
+            <arg type="s" name="themeId" direction="in"/>
+        </method>
+        <method name="Get">
+            <arg type="s" name="themeId" direction="out"/>
+        </method>
+        <method name="List">
+            <arg type="s" name="themesJson" direction="out"/>
+        </method>
+    </interface>
+</node>

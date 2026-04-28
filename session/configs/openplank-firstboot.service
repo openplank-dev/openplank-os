@@ -1,0 +1,16 @@
+[Unit]
+Description=openPlank First Boot Setup
+After=network.target postgresql.service
+Before=openplank.service
+ConditionPathExists=!/opt/openplank/.setup-done
+
+[Service]
+Type=oneshot
+ExecStart=/opt/openplank/scripts/first-boot.sh
+StandardInput=tty
+TTYPath=/dev/tty1
+TTYReset=yes
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

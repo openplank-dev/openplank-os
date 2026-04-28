@@ -1,0 +1,60 @@
+# openPlank OS — Base Packages
+# Phase 1: Kiosk-Mode
+
+# === Display ===
+xorg
+xserver-xorg-video-all
+xinit
+openbox
+chromium
+
+# === System ===
+systemd
+network-manager
+wpasupplicant
+firmware-linux-free
+firmware-linux-nonfree
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+pulseaudio
+alsa-utils
+plymouth
+plymouth-themes
+
+# === openPlank Dependencies ===
+nodejs
+npm
+postgresql
+postgresql-client
+
+# === Hardware Support ===
+cups
+cups-browsed
+printer-driver-hpcups
+printer-driver-gutenprint
+sane-utils
+libsane-common
+usb-modeswitch
+pcscd
+libccid
+
+# === Tools ===
+sudo
+curl
+wget
+git
+htop
+nano
+usbutils
+pciutils
+net-tools
+dnsutils
+avahi-daemon
+avahi-utils
+openssh-server
+
+# === Fonts ===
+fonts-inter
+fonts-noto
+fonts-noto-color-emoji

@@ -1,0 +1,29 @@
+{
+  "id": "patient-card",
+  "name": "Patientenkarte",
+  "description": "Zeigt Patientenstammdaten, Allergien, Versicherung",
+  "version": "1.0.0",
+  "category": "clinical",
+  "defaultSize": { "width": 400, "height": 500 },
+  "minSize": { "width": 300, "height": 200 },
+  "resizable": true,
+  "permissions": ["patients:read"],
+  "renderTargets": ["main", "tablet", "wall"],
+  "dataSource": "/api/v1/patients/:id",
+  "fields": [
+    { "key": "firstName", "label": "Vorname", "type": "text" },
+    { "key": "lastName", "label": "Nachname", "type": "text" },
+    { "key": "dateOfBirth", "label": "Geburtsdatum", "type": "date" },
+    { "key": "insuranceType", "label": "Versicherung", "type": "badge", "variants": {
+      "GKV": "green", "PKV": "blue", "Selbstzahler": "orange"
+    }},
+    { "key": "allergies", "label": "Allergien", "type": "alert", "style": "danger" },
+    { "key": "phone", "label": "Telefon", "type": "text" },
+    { "key": "email", "label": "E-Mail", "type": "text" }
+  ],
+  "actions": [
+    { "label": "Bearbeiten", "command": "navigate", "target": "patient-edit" },
+    { "label": "Termin buchen", "command": "navigate", "target": "appointment-new" },
+    { "label": "Behandlungsplan", "command": "show", "target": "treatment-plan" }
+  ]
+}

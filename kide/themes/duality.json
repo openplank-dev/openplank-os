@@ -1,0 +1,33 @@
+{
+  "id": "duality",
+  "name": "Duality",
+  "description": "Modern, hell, freundlich — der Default-Look von openPlank",
+  "version": "1.0.0",
+  "tokens": {
+    "bg-primary": "#F8FAFC",
+    "bg-secondary": "#FFFFFF",
+    "bg-tertiary": "#F1F5F9",
+    "bg-card": "#FFFFFF",
+    "text-primary": "#1E293B",
+    "text-secondary": "#64748B",
+    "text-muted": "#94A3B8",
+    "accent": "#5B9AA0",
+    "accent-hover": "#4A8A90",
+    "accent-light": "rgba(91,154,160,0.1)",
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "danger": "#EF4444",
+    "info": "#3B82F6",
+    "border": "#E2E8F0",
+    "shadow": "0 1px 3px rgba(0,0,0,.1)",
+    "shadow-lg": "0 10px 15px rgba(0,0,0,.1)",
+    "radius": "12px",
+    "radius-sm": "8px",
+    "font-family": "'Inter', system-ui, sans-serif",
+    "font-size-base": "14px"
+  },
+  "wallpaper": {
+    "type": "gradient",
+    "value": "linear-gradient(135deg, #E0F2FE 0%, #F0F9FF 50%, #ECFDF5 100%)"
+  }
+}

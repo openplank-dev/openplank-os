@@ -1,0 +1,29 @@
+{
+  "id": "appointment-list",
+  "name": "Terminliste",
+  "description": "Tagesansicht mit Zeitslots und Terminkarten",
+  "version": "1.0.0",
+  "category": "scheduling",
+  "defaultSize": { "width": 600, "height": 800 },
+  "minSize": { "width": 350, "height": 400 },
+  "resizable": true,
+  "permissions": ["appointments:read"],
+  "renderTargets": ["main", "tablet", "wall"],
+  "dataSource": "/api/v1/appointments?date=:date",
+  "config": {
+    "timeRange": { "start": "08:00", "end": "18:00" },
+    "slotDuration": 15,
+    "showRooms": true
+  },
+  "statusBadges": {
+    "geplant": { "color": "gray", "label": "Geplant" },
+    "bestätigt": { "color": "blue", "label": "Bestätigt" },
+    "eingetroffen": { "color": "yellow", "label": "Eingetroffen" },
+    "behandelt": { "color": "green", "label": "Behandelt" },
+    "abgesagt": { "color": "red", "label": "Abgesagt" }
+  },
+  "actions": [
+    { "label": "Neuer Termin", "command": "navigate", "target": "appointment-new" },
+    { "label": "Wochenansicht", "command": "show", "target": "calendar-week" }
+  ]
+}
