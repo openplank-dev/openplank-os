@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<!--
+    org.kide.Shell — D-Bus Interface
+    KI Desktop Environment Shell control
+-->
+
+<node>
+    <!-- Widget / Window Management -->
+    <interface name="org.kide.Widgets">
+        <method name="Create">
+            <arg type="s" name="widgetType" direction="in"/>
+            <arg type="s" name="configJson" direction="in"/>
+            <arg type="s" name="widgetId" direction="out"/>
+        </method>
+        <method name="Close">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="Focus">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="Minimize">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="Maximize">
+            <arg type="s" name="widgetId" direction="in"/>
+        </method>
+        <method name="Move">
+            <arg type="s" name="widgetId" direction="in"/>
+            <arg type="i" name="x" direction="in"/>
+            <arg type="i" name="y" direction="in"/>
+        </method>
+        <method name="Resize">
+            <arg type="s" name="widgetId" direction="in"/>
+            <arg type="i" name="width" direction="in"/>
+            <arg type="i" name="height" direction="in"/>
+        </method>
+        <method name="List">
+            <arg type="s" name="widgetsJson" direction="out"/>
+        </method>
+        <signal name="Created"><arg type="s" name="widgetId"/></signal>
+        <signal name="Closed"><arg type="s" name="widgetId"/></signal>
+        <signal name="Focused"><arg type="s" name="widgetId"/></signal>
+    </interface>
+
+    <!-- Viewport Management -->
+    <interface name="org.kide.Viewports">
+        <method name="List">
+            <arg type="s" name="viewportsJson" direction="out"/>
+        </method>
+        <method name="MoveWidget">
+            <arg type="s" name="widgetId" direction="in"/>
+            <arg type="s" name="viewportId" direction="in"/>
+        </method>
+        <signal name="Connected"><arg type="s" name="viewportId"/></signal>
+        <signal name="Disconnected"><arg type="s" name="viewportId"/></signal>
+    </interface>
+
+    <!-- KI Command Bridge -->
+    <interface name="org.kide.Bridge">
+        <method name="Execute">
+            <arg type="s" name="commandJson" direction="in"/>
+            <arg type="b" name="success" direction="out"/>
+        </method>
+        <method name="NaturalLanguage">
+            <arg type="s" name="text" direction="in"/>
+            <arg type="s" name="responseJson" direction="out"/>
+        </method>
+        <signal name="CommandExecuted">
+            <arg type="s" name="commandJson"/>
+        </signal>
+    </interface>
+
+    <!-- Shared Context -->
+    <interface name="org.kide.SharedContext">
+        <method name="Share">
+            <arg type="s" name="objectType" direction="in"/>
+            <arg type="s" name="objectId" direction="in"/>
+            <arg type="s" name="dataJson" direction="in"/>
+            <arg type="s" name="entryId" direction="out"/>
+        </method>
+        <method name="Unshare">
+            <arg type="s" name="entryId" direction="in"/>
+        </method>
+        <method name="List">
+            <arg type="s" name="entriesJson" direction="out"/>
+        </method>
+        <signal name="ObjectShared"><arg type="s" name="entryJson"/></signal>
+        <signal name="ObjectUnshared"><arg type="s" name="entryId"/></signal>
+    </interface>
+
+    <!-- Theme -->
+    <interface name="org.kide.Theme">
+        <method name="Set"><arg type="s" name="themeId" direction="in"/></method>
+        <method name="Get"><arg type="s" name="themeId" direction="out"/></method>
+        <method name="List"><arg type="s" name="themesJson" direction="out"/></method>
+    </interface>
+
+    <!-- Voice (Phase 3) -->
+    <interface name="org.kide.Voice">
+        <method name="StartListening"/>
+        <method name="StopListening"/>
+        <method name="Speak"><arg type="s" name="text" direction="in"/></method>
+        <property name="IsListening" type="b" access="read"/>
+        <signal name="SpeechRecognized"><arg type="s" name="text"/></signal>
+    </interface>
+</node>

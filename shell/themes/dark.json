@@ -1,0 +1,39 @@
+{
+  "id": "dark",
+  "name": "Dark",
+  "description": "Dunkles Theme — schont die Augen",
+  "tokens": {
+    "bg-desktop": "#0A0F1A",
+    "bg-panel": "rgba(15,23,42,0.9)",
+    "bg-window": "#1E293B",
+    "bg-window-inactive": "#172032",
+    "bg-titlebar": "#0F172A",
+    "bg-titlebar-inactive": "#0D1324",
+    "bg-menu": "#1E293B",
+    "bg-tooltip": "#F8FAFC",
+    "text-primary": "#F8FAFC",
+    "text-secondary": "#94A3B8",
+    "text-muted": "#64748B",
+    "text-tooltip": "#1E293B",
+    "accent": "#5B9AA0",
+    "accent-hover": "#7DD3FC",
+    "accent-active": "#38BDF8",
+    "accent-text": "#FFFFFF",
+    "border-window": "#334155",
+    "border-panel": "rgba(255,255,255,0.06)",
+    "shadow-window": "0 8px 32px rgba(0,0,0,0.4)",
+    "shadow-panel": "0 2px 8px rgba(0,0,0,0.3)",
+    "radius-window": "12px",
+    "radius-button": "8px",
+    "radius-input": "6px",
+    "font-family": "'Inter', system-ui, sans-serif",
+    "font-size": "14px",
+    "close-button": "#EF4444",
+    "minimize-button": "#F59E0B",
+    "maximize-button": "#22C55E"
+  },
+  "wallpaper": {
+    "type": "gradient",
+    "value": "linear-gradient(135deg, #0F172A 0%, #1A1A2E 50%, #0F172A 100%)"
+  }
+}

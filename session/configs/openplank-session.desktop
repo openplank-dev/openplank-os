@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=openPlank KI-DE
-Comment=KI Desktop Environment für Arztpraxen
-Exec=/usr/bin/openplank-session
-TryExec=/usr/bin/openplank-session
-Type=Application
-DesktopNames=openPlank

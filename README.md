@@ -1,25 +1,25 @@
 # openPlank OS 🐧
 
-**Das KI Desktop Environment für Arztpraxen.**
+**KI-DE — Das KI Desktop Environment.**
 
 > KDE = K Desktop Environment.
-> openPlank = **KI** Desktop Environment.
+> KI-DE = **KI** Desktop Environment.
 
-Eine Linux-Distribution, die openPlank als nativen Desktop nutzt. Kein Browser-Tab. Kein Windows. Rechner an → Praxis läuft.
+Ein Linux Desktop Environment, bei dem KI der Window Manager ist. Nicht eine App mit KI-Features — ein komplettes Desktop, gesteuert durch natürliche Sprache und intelligentes Layout.
 
 ## Vision
 
 ```
 ┌──────────────────────────────────────────────────┐
-│                 openPlank OS                     │
+│                  openPlank KI-DE                 │
 │                                                  │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
-│  │ Patienten │  │ Röntgen  │  │ Termine  │      │
+│  │  Browser  │  │  Editor  │  │  Dateien │      │
 │  │           │  │          │  │          │      │
 │  │  Widget   │  │  Widget  │  │  Widget  │      │
 │  └──────────┘  └──────────┘  └──────────┘      │
 │                                                  │
-│  🎤 "Öffne Patientenakte Müller neben Röntgen"  │
+│  🎤 "Leg den Editor neben den Browser"           │
 │                                                  │
 │  ┌────────────────────────────────────────┐      │
 │  │        KI Command Bar                  │      │
@@ -29,21 +29,24 @@ Eine Linux-Distribution, die openPlank als nativen Desktop nutzt. Kein Browser-T
 
 ## Was ist das?
 
-openPlank OS ist eine Debian-basierte Linux-Distribution, die:
+KI-DE ist ein Wayland-basiertes Linux Desktop Environment, das:
 
-- **Direkt in openPlank bootet** — kein klassischer Desktop, kein Browser
 - **KI als Window Manager** nutzt — Sprache & Text steuern das Layout
-- **Multi-Screen nativ** unterstützt — Tablet, Wandmonitor, Smartglass = Viewports
-- **Zero-Config** ist — USB-Stick rein, installieren, Praxis läuft
-- **Unkaputtbar** ist — Read-Only Root, Auto-Recovery, OTA-Updates
+- **Multi-Screen nativ** unterstützt — jeder Monitor ist ein Viewport
+- **Apps als Widgets** behandelt — jedes Fenster ist addressierbar, steuerbar, teilbar
+- **Shared Context** hat — Objekte zwischen Screens teilen (Drag von Laptop auf Wandmonitor)
+- **Theme Engine** mitbringt — CSS-Token-basiert, live umschaltbar
+- **Zero-Config** möglich — als Linux-Distro: booten und loslegen
 
 ## Architektur
 
 ```
 ┌─────────────────────────────────────────┐
-│            openPlank KI-DE              │  ← KI Desktop Environment
+│            Anwendungen (Apps)           │  ← Beliebige Apps laufen auf KI-DE
 ├─────────────────────────────────────────┤
-│  Scene Graph  │  Bridge  │  Widgets     │  ← openPlank Core
+│         KI-DE Desktop Shell             │  ← Widget Registry, Themes, Panels
+├─────────────────────────────────────────┤
+│  Scene Graph  │  Bridge  │  Shared Ctx  │  ← Core: Adressierbarer UI-Baum
 ├─────────────────────────────────────────┤
 │         planktop (Compositor)           │  ← Wayland Compositor
 ├─────────────────────────────────────────┤
@@ -58,73 +61,52 @@ openPlank OS ist eine Debian-basierte Linux-Distribution, die:
 | OS Base | Debian 12 (Bookworm) | 🟢 Stabil |
 | Display | Wayland (wlroots) | 🟡 Phase 2 |
 | Compositor | planktop | 🔴 Geplant |
-| KI-DE | openPlank Scene Graph + Bridge | 🟢 Existiert |
-| UI Rendering | Chromium Kiosk (Phase 1) → Native (Phase 3) | 🟡 Phase 1 |
-| KI Engine | Ollama (lokal) | 🟢 Funktioniert |
-| Datenbank | PostgreSQL | 🟢 Funktioniert |
+| Desktop Shell | KI-DE (Scene Graph + Bridge) | 🟡 Prototyp |
+| KI Engine | Ollama (lokal) / OpenAI-kompatibel | 🟢 Funktioniert |
+| Rendering | Chromium Kiosk (Phase 1) → Native (Phase 3) | 🟡 Phase 1 |
 
 ## Phasen
 
-### Phase 1: Kiosk-Distro (MVP) 🎯
-Schnellster Weg zu einem bootbaren System:
+### Phase 1: Kiosk-Shell (MVP) 🎯
 - Debian Minimal + Auto-Login
-- Chromium Kiosk → `localhost:3001`
-- PostgreSQL + Node.js + openPlank vorinstalliert
-- Ollama optional vorinstalliert
-- Setup-Wizard beim ersten Boot
-- **Ziel:** USB-Stick → 10min Install → Praxis läuft
+- Chromium Kiosk als Shell (wie ChromeOS)
+- Scene Graph + Widget Registry
+- KI Command Bridge (natürlichsprachliche Befehle → UI-Aktionen)
+- Theme Engine (live umschaltbar)
+- Shared Context (Objekte zwischen Viewports teilen)
+- **Ziel:** USB-Stick → Install → KI-Desktop
 
-### Phase 2: Eigener Session Manager
-- Wayland-Compositor auf wlroots (`planktop`)
-- Scene Graph steuert Fenster-Layout
-- KI Bridge über D-Bus statt HTTP
-- Widgets = Wayland Surfaces oder WebViews
+### Phase 2: Wayland Compositor
+- Eigener Compositor auf wlroots (`planktop`)
+- Apps als Wayland Surfaces
+- KI steuert Fenster-Layout über D-Bus
 - Multi-Monitor nativ
+- Widget ↔ Fenster Mapping
 
 ### Phase 3: KI Window Manager
 - Sprachsteuerung als primärer Input
-- KI arrangiert Fenster automatisch
-- Drag & Drop zwischen Screens
+- KI arrangiert Fenster automatisch basierend auf Kontext
+- Drag & Drop zwischen Screens (Laptop → Projektor → Tablet)
 - OTA-Updates (A/B-Partitionen)
-- Appliance-Mode (unkaputtbar)
+- Plugin-System für Desktop-Widgets
 
-## Quick Start (Phase 1)
+## Quick Start
 
 ### ISO bauen
 ```bash
-# Voraussetzungen (Debian/Ubuntu)
 sudo apt install live-build debootstrap
-
-# ISO bauen
-cd iso/
-sudo lb config
-sudo lb build
-
-# Ergebnis: iso/live-image-amd64.hybrid.iso
+sudo ./scripts/build-iso.sh
 ```
 
 ### In VM testen
 ```bash
-# Mit QEMU
-qemu-system-x86_64 -m 4096 -cdrom iso/live-image-amd64.hybrid.iso -enable-kvm
-
-# Oder mit VirtualBox / VMware
+qemu-system-x86_64 -m 4096 -cdrom build/openplank-os.iso -enable-kvm
 ```
 
-### Auf USB-Stick schreiben
+### KI-DE auf bestehendem System
 ```bash
-sudo dd if=iso/live-image-amd64.hybrid.iso of=/dev/sdX bs=4M status=progress
+# Kommt in Phase 2 — apt install openplank-kide
 ```
-
-## Praxis-Szenario
-
-1. 🖥️ Zahnarzt kauft Mini-PC (300€)
-2. 💾 USB-Stick rein, openPlank OS installieren (10 Min)
-3. 🚀 Rechner startet → Setup-Wizard (Praxisname, Drucker, Netzwerk)
-4. ✅ Fertig. Praxis läuft.
-5. 📱 Tablet ins WLAN → verbindet sich automatisch
-6. 🖥️ Wandmonitor anschließen → zeigt Wartezimmer-Info
-7. 🎤 "Hey Plank, zeig mir die Termine für heute"
 
 ## Struktur
 
@@ -132,29 +114,50 @@ sudo dd if=iso/live-image-amd64.hybrid.iso of=/dev/sdX bs=4M status=progress
 openplank-os/
 ├── iso/                    # Live-Build Konfiguration
 │   ├── config/             # Debian live-build config
-│   ├── hooks/              # Build-Hooks (Post-Install Scripts)
+│   ├── hooks/              # Build-Hooks
 │   ├── packages/           # Paketlisten
 │   └── branding/           # Plymouth, Wallpaper, Icons
 ├── compositor/             # planktop — Wayland Compositor (Phase 2)
-│   ├── src/                # C/Rust Compositor Code
+│   ├── src/                # Rust Compositor Code
 │   └── protocols/          # Wayland Protocol Extensions
+├── shell/                  # KI-DE Desktop Shell
+│   ├── scene-graph/        # Widget Registry + Scene Tree
+│   ├── bridge/             # KI Command Bridge
+│   ├── shared-context/     # Objekt-Sharing zwischen Viewports
+│   ├── themes/             # Theme Definitionen
+│   └── panels/             # Taskbar, Launcher, Notifications
 ├── session/                # Session Manager
-│   ├── src/                # Session/Login Manager
-│   └── configs/            # Autostart, D-Bus, systemd
-├── kide/                   # KI Desktop Environment
-│   ├── widgets/            # Native Widget Definitionen
-│   ├── themes/             # Desktop Themes
-│   └── dbus/               # D-Bus Interface für KI Bridge
+│   ├── src/                # Login/Session Manager
+│   └── configs/            # systemd, D-Bus, Autostart
 ├── scripts/                # Build & Setup Scripts
 ├── docs/                   # Dokumentation
 └── assets/                 # Logos, Wallpapers, Icons
 ```
 
-## Verwandte Repos
+## Apps auf KI-DE
 
-- [openplank](https://github.com/openplank-dev/openplank) — Dachmarke
-- [openplank-dent](https://github.com/openplank-dev/openplank-dent) — Zahnarztpraxen
-- [openplank-med](https://github.com/openplank-dev/openplank-med) — Allgemeinmedizin
+KI-DE ist ein Desktop Environment — jede Linux-App läuft darauf:
+
+```bash
+# Beispiele für Apps die auf KI-DE laufen
+firefox          # Browser
+code             # VS Code
+libreoffice      # Office
+spotify          # Musik
+openplank-dent   # Zahnarzt-Software (separate App)
+openplank-med    # Arzt-Software (separate App)
+beliebige-app    # Alles was auf Linux läuft
+```
+
+Der Unterschied zu GNOME/KDE: **Die KI steuert das Layout.**
+
+```
+🎤 "Öffne Firefox neben dem Terminal"
+🎤 "Mach den Editor größer"
+🎤 "Zeig mir den Dateimanager auf dem zweiten Monitor"
+🎤 "Dunkles Theme"
+🎤 "Teile dieses Fenster auf den Projektor"
+```
 
 ## Lizenz
 
@@ -162,4 +165,4 @@ MIT — Open Source, für immer.
 
 ---
 
-*"Kein Windows. Kein macOS. Kein IT-Typ nötig. Einfach Praxis."*
+*"Kein Window Manager den du konfigurierst. Einer der dich versteht."*

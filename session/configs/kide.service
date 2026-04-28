@@ -1,0 +1,16 @@
+[Unit]
+Description=KI-DE Shell Server
+After=network.target
+
+[Service]
+Type=simple
+User=kide
+WorkingDirectory=/opt/kide/server
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+
+[Install]
+WantedBy=multi-user.target

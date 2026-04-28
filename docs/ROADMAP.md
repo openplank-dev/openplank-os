@@ -1,60 +1,60 @@
-# openPlank OS — Roadmap
+# KI-DE — Roadmap
 
-## Phase 1: Kiosk-Distro (MVP) 🎯
+## Phase 1: Kiosk-Shell (MVP) 🎯
 
-**Ziel:** Ein bootbares ISO das direkt in openPlank startet.
+**Ziel:** Ein bootbares ISO mit KI-gesteuertem Desktop.
 
-| Task | Beschreibung | Status |
-|------|-------------|--------|
-| Debian live-build Config | Paketlisten, Hooks, Branding | ✅ |
-| Auto-Login (tty1) | systemd getty override | ✅ |
-| Chromium Kiosk | openbox + chromium --kiosk | ✅ |
-| openPlank Service | systemd unit, auto-start | ✅ |
-| First-Boot Wizard | Praxis-Name, Netzwerk, DB, Admin | ✅ |
-| PostgreSQL Setup | Auto-init, User, DB | ✅ |
-| Build Script | `build-iso.sh` | ✅ |
-| Plymouth Splash | openPlank Boot-Logo | 🔴 |
-| Wallpaper/Branding | Desktop-Hintergrund | 🔴 |
-| ISO Test (QEMU) | Boot + Setup durchspielen | 🔴 |
-| USB Test (Hardware) | Echtes System booten | 🔴 |
-| Ollama Integration | Lokale KI vorinstalliert | 🟡 |
+| Task | Status |
+|------|--------|
+| Debian live-build Config | ✅ |
+| Auto-Login + Chromium Kiosk | ✅ |
+| Scene Graph + Widget Types | ✅ |
+| KI Command Bridge (DE + EN) | ✅ |
+| Shared Context | ✅ |
+| Theme Engine (Light + Dark) | ✅ |
+| Taskbar Panel Spec | ✅ |
+| Build Script | ✅ |
+| Plymouth Splash | 🔴 |
+| Wallpaper / Branding | 🔴 |
+| ISO Test (QEMU) | 🔴 |
+| KI-DE Web Shell (HTML/CSS/JS) | 🔴 |
+| Ollama Integration | 🟡 |
 
-**Geschätzt:** 2-3 Tage
+**Geschätzt:** 1-2 Wochen
 
-## Phase 2: Desktop Session
+## Phase 2: Sway Integration
 
-| Task | Beschreibung | Status |
-|------|-------------|--------|
-| Sway als Compositor | wlroots-basiert, IPC | 🔴 |
-| Sway IPC Bridge | Scene Graph → Sway Befehle | 🔴 |
-| Multi-Monitor | Wayland native | 🔴 |
-| D-Bus Interface | org.openplank.KiDE | ✅ (Spec) |
-| Notification Daemon | Desktop Notifications | 🔴 |
-| Screen Lock | Bildschirmsperre | 🔴 |
-| Power Management | Suspend, Shutdown Dialoge | 🔴 |
+| Task | Status |
+|------|--------|
+| Sway als Compositor | 🔴 |
+| Sway IPC ↔ Scene Graph | 🔴 |
+| D-Bus Bridge | 🔴 |
+| Multi-Monitor | 🔴 |
+| App Launcher | 🔴 |
+| Notification Daemon | 🔴 |
+| Screen Lock | 🔴 |
+| Power Management | 🔴 |
 
-**Geschätzt:** 2-4 Wochen
+**Geschätzt:** 4-6 Wochen
 
-## Phase 3: Native KI-DE
+## Phase 3: planktop (Eigener Compositor)
 
-| Task | Beschreibung | Status |
-|------|-------------|--------|
-| Eigener Compositor | Rust + smithay oder C + wlroots | 🔴 |
-| Native Widgets | GTK4 oder Qt6 statt WebView | 🔴 |
-| Voice Engine | STT → Bridge → TTS Pipeline | 🔴 |
-| Viewport Routing | Widget ↔ Screen Zuordnung | 🔴 |
-| Drag & Drop | Zwischen Viewports | 🔴 |
-| OTA Updates | A/B Partitionen, auto-update | 🔴 |
-| Appliance Mode | Read-only root, recovery | 🔴 |
-| AR/Smartglass | Viewport für Datenbrillen | 🔴 |
+| Task | Status |
+|------|--------|
+| Rust + smithay Compositor | 🔴 |
+| Widget ↔ Wayland Surface | 🔴 |
+| Voice Engine (STT → Bridge → TTS) | 🔴 |
+| Viewport Routing (Screen-zu-Screen) | 🔴 |
+| Drag & Drop zwischen Viewports | 🔴 |
+| OTA Updates (A/B Partitionen) | 🔴 |
+| Plugin-System für Widgets | 🔴 |
 
 **Geschätzt:** 3-6 Monate
 
 ## Langfrist-Vision
 
-- Eigenes Installationsprogramm (Calamares Fork)
-- Eigener App Store (Flatpak-basiert)
-- Plugin-Widgets von Drittanbietern
-- Praxis-übergreifendes Multi-Standort
-- Patienten-Terminal (Self-Checkin Kiosk)
-- TI-Integration auf OS-Level
+- Eigenes Installationsprogramm
+- App Store (Flatpak-basiert)
+- Remote Desktop (KI-DE in der Cloud)
+- Mobile Companion (Tablet als Viewport)
+- AR-Viewport (Datenbrillen)

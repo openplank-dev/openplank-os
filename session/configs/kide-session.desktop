@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=KI-DE
+Comment=KI Desktop Environment
+Exec=/usr/bin/kide-session
+TryExec=/usr/bin/kide-session
+Type=Application
+DesktopNames=KI-DE

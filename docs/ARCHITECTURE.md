@@ -1,42 +1,34 @@
-# openPlank OS — Architektur
+# KI-DE — Architektur
 
 ## Überblick
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                       Benutzer                               │
-│            🎤 Sprache   👆 Touch   ⌨️ Tastatur               │
+│            🎤 Sprache   👆 Touch/Maus   ⌨️ Tastatur          │
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
 │   │   Viewport   │  │   Viewport   │  │   Viewport   │     │
-│   │   (Monitor)  │  │   (Tablet)   │  │   (Wand)     │     │
+│   │  (Monitor 1) │  │  (Monitor 2) │  │   (Tablet)   │     │
 │   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │
 │          │                 │                  │              │
 │   ┌──────┴─────────────────┴──────────────────┴───────┐     │
 │   │              Viewport Manager                      │     │
-│   │     (Welcher Screen zeigt welche Widgets?)         │     │
 │   └────────────────────────┬──────────────────────────┘     │
 │                            │                                 │
 │   ┌────────────────────────┴──────────────────────────┐     │
-│   │              Scene Graph + Widget Registry          │     │
-│   │     (Alle UI-Elemente als addressierbare Widgets)  │     │
+│   │              Scene Graph (Widget-Baum)              │     │
 │   └────────────────────────┬──────────────────────────┘     │
 │                            │                                 │
 │   ┌──────────┐  ┌─────────┴────────┐  ┌──────────────┐     │
-│   │  Theme   │  │   KI Command     │  │   Voice      │     │
-│   │  Engine  │  │   Bridge         │  │   Engine     │     │
+│   │  Theme   │  │   KI Command     │  │   Shared     │     │
+│   │  Engine  │  │   Bridge         │  │   Context    │     │
 │   └──────────┘  └─────────┬────────┘  └──────────────┘     │
 │                           │                                  │
-│   ┌───────────────────────┴───────────────────────────┐     │
-│   │              openPlank Server (Node.js)            │     │
-│   │     API │ Auth │ Patients │ Appointments │ KI      │     │
-│   └────────────────────────┬──────────────────────────┘     │
-│                            │                                 │
-│   ┌──────────┐  ┌─────────┴──────┐  ┌────────────────┐     │
-│   │PostgreSQL│  │    Ollama      │  │   Hardware     │     │
-│   │  (Daten) │  │  (Lokale KI)   │  │ (Drucker etc)  │     │
-│   └──────────┘  └────────────────┘  └────────────────┘     │
+│   ┌──────────────────────┴────────────────────────────┐     │
+│   │              KI Engine (Ollama / LLM)              │     │
+│   └───────────────────────────────────────────────────┘     │
 │                                                              │
 ├──────────────────────────────────────────────────────────────┤
 │   Compositor: Chromium Kiosk (Phase 1) → planktop (Phase 3) │
@@ -45,66 +37,72 @@
 ├──────────────────────────────────────────────────────────────┤
 │   Linux Kernel (Debian 12)                                   │
 ├──────────────────────────────────────────────────────────────┤
-│   Hardware (Mini-PC / Thin Client / Dental-Station)          │
+│   Hardware (PC / Laptop / Mini-PC / Tablet)                  │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+## KI-DE vs. KDE / GNOME
+
+| Eigenschaft | GNOME / KDE | KI-DE |
+|-------------|-------------|-------|
+| Window Management | Manuell (Drag, Resize, Snap) | KI-gesteuert + manuell |
+| App-Start | Klick auf Icon | "Öffne Firefox" oder Klick |
+| Layout | User arrangiert Fenster | KI schlägt Layout vor |
+| Multi-Screen | Monitor-Settings | KI routet Fenster |
+| Sharing | Copy-Paste | Shared Context (Objekt-Sharing) |
+| Themes | Settings-Panel | "Dunkles Theme" |
+| Konfiguration | GUI / dotfiles | Natürliche Sprache + GUI |
 
 ## Boot-Sequenz
 
 ```
-1. BIOS/UEFI
-   ↓
-2. GRUB → Linux Kernel
-   ↓
-3. systemd
-   ├── postgresql.service          (Datenbank starten)
-   ├── NetworkManager.service      (Netzwerk)
-   ├── openplank-firstboot.service (Nur beim allerersten Boot)
-   ├── openplank.service           (Server auf :3001)
+1. BIOS/UEFI → GRUB → Linux Kernel
+2. systemd
+   ├── Netzwerk, Audio, etc.
+   ├── ollama.service (optionale lokale KI)
    └── getty@tty1 (autologin)
        ↓
-4. .bash_profile → startx
-   ↓
-5. openbox → chromium --kiosk → localhost:3001
-   ↓
-6. openPlank UI (Duality / Admin)
+3. KI-DE Session
+   ├── Phase 1: startx → openbox → chromium --kiosk
+   └── Phase 3: planktop (eigener Compositor)
+       ↓
+4. Desktop Shell
+   ├── Taskbar
+   ├── Command Bar
+   ├── App Launcher
+   └── Notification Center
 ```
 
-## Kommunikation
+## Kommunikationswege
 
-### Phase 1 (Kiosk)
+### Phase 1 (Chromium Kiosk)
 ```
-Browser ←→ HTTP/WebSocket ←→ openPlank Server ←→ PostgreSQL
-                                    ↕
-                                  Ollama
+Browser UI ←→ WebSocket ←→ KI-DE Server ←→ Ollama
 ```
 
-### Phase 2+ (Native Compositor)
+### Phase 2+ (planktop Compositor)
 ```
-KI-DE ←→ D-Bus ←→ planktop (Compositor)
-  ↕                    ↕
-openPlank Server    Wayland Protocol
-  ↕                    ↕
-PostgreSQL         GPU/DRM/KMS
+Apps ←→ Wayland Protocol ←→ planktop
+                                ↕ D-Bus
+                           KI-DE Shell
+                                ↕
+                           KI Engine
 ```
 
 ## Hardware-Anforderungen
 
-### Minimum (Phase 1 Kiosk)
+### Minimum (ohne lokale KI)
 - CPU: x86_64, 2 Kerne
-- RAM: 2 GB (4 GB empfohlen)
-- Disk: 16 GB
-- Netzwerk: Ethernet oder WiFi
+- RAM: 2 GB
+- Disk: 8 GB
+- GPU: Jede mit KMS-Support
 
-### Empfohlen (mit lokaler KI)
+### Empfohlen (mit lokaler KI via Ollama)
 - CPU: x86_64, 4+ Kerne
-- RAM: 16 GB (für Ollama)
-- GPU: Optional (für schnellere KI-Inferenz)
+- RAM: 16 GB
+- GPU: Optional (NVIDIA/AMD für schnellere Inferenz)
 - Disk: 64 GB SSD
-- Netzwerk: Gigabit Ethernet
 
-### Empfohlene Hardware
-- Intel NUC / Beelink Mini-PC (ab 200€)
-- Lenovo ThinkCentre Tiny (ab 250€)
-- HP ProDesk Mini (ab 300€)
-- Raspberry Pi 5 (experimentell, ohne Ollama)
+### KI-DE ohne lokale KI
+KI-DE kann auch mit einem Remote-LLM arbeiten (OpenAI API, eigener Server).
+In dem Fall reichen 2 GB RAM.

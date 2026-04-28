@@ -1,0 +1,103 @@
+#!/bin/bash
+# KI-DE — Post-Install Hook
+# Runs inside the chroot during ISO build
+
+set -e
+
+echo "🔧 KI-DE Setup..."
+
+# === Create kide user ===
+useradd -m -s /bin/bash -G sudo,audio,video,plugdev,netdev kide
+echo "kide:kide" | chpasswd
+echo "kide ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kide
+
+# === Install Node.js 22 LTS (for KI-DE Shell server) ===
+if ! command -v node &>/dev/null || [[ "$(node -v)" < "v20" ]]; then
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+    apt-get install -y nodejs
+fi
+
+# === Auto-login (no display manager, straight to kiosk) ===
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+cat > /etc/systemd/system/getty@tty1.service.d/autologin.conf << 'UNIT'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin kide --noclear %I $TERM
+UNIT
+
+# === .bash_profile: auto-start X on tty1 ===
+cat > /home/kide/.bash_profile << 'PROFILE'
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    exec startx -- -nocursor 2>/dev/null
+fi
+PROFILE
+chown kide:kide /home/kide/.bash_profile
+
+# === Openbox autostart: Chromium kiosk (Phase 1 Shell) ===
+mkdir -p /home/kide/.config/openbox
+cat > /home/kide/.config/openbox/autostart << 'AUTOSTART'
+#!/bin/bash
+# KI-DE Phase 1 Shell — Chromium Kiosk
+
+# Wait for KI-DE server
+echo "⏳ Waiting for KI-DE Shell server..."
+for i in $(seq 1 30); do
+    curl -s http://localhost:3001/health >/dev/null 2>&1 && break
+    sleep 1
+done
+
+# Launch Chromium in kiosk mode
+chromium \
+    --kiosk \
+    --no-first-run \
+    --disable-translate \
+    --disable-infobars \
+    --disable-suggestions-service \
+    --disable-save-password-bubble \
+    --disable-session-crashed-bubble \
+    --noerrdialogs \
+    --disk-cache-size=0 \
+    --user-data-dir=/home/kide/.chromium-kide \
+    http://localhost:3001
+AUTOSTART
+chmod +x /home/kide/.config/openbox/autostart
+chown -R kide:kide /home/kide/.config
+
+# === systemd service for KI-DE Shell server ===
+cat > /etc/systemd/system/kide.service << 'SERVICE'
+[Unit]
+Description=KI-DE Shell Server
+After=network.target
+
+[Service]
+Type=simple
+User=kide
+WorkingDirectory=/opt/kide/server
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+systemctl enable kide.service
+
+# === Hostname ===
+echo "kide" > /etc/hostname
+
+# === MOTD ===
+cat > /etc/motd << 'MOTD'
+
+  ╔═══════════════════════════════════════╗
+  ║       KI-DE — KI Desktop Environment  ║
+  ║          openPlank OS v0.1.0          ║
+  ╚═══════════════════════════════════════╝
+
+  Shell:  http://localhost:3001
+
+MOTD
+
+echo "✅ KI-DE Setup complete."

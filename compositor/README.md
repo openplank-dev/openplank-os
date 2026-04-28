@@ -1,4 +1,4 @@
-# planktop — openPlank Wayland Compositor
+# planktop — KI-DE Wayland Compositor
 
 > Phase 2 — Eigener Wayland Compositor für das KI Desktop Environment
 
@@ -6,17 +6,18 @@
 
 `planktop` ist ein minimaler Wayland-Compositor auf `wlroots`-Basis, der:
 
-- Vom openPlank Scene Graph gesteuert wird
+- Vom Scene Graph der KI-DE Shell gesteuert wird
 - KI-Commands über D-Bus empfängt
-- Widgets als Wayland-Surfaces oder WebViews rendert
+- Apps als Wayland Surfaces rendert
 - Multi-Monitor nativ unterstützt
+- Tiling und Floating Layouts mischt (KI entscheidet)
 
 ## Architektur
 
 ```
 ┌─────────────────────────┐
-│     openPlank Server    │
-│   (Scene Graph + KI)    │
+│    KI-DE Shell          │
+│  (Scene Graph + Bridge) │
 ├────────────┬────────────┤
 │   D-Bus    │  WebSocket │
 ├────────────┴────────────┤
@@ -31,51 +32,77 @@
 
 ## Technologie-Optionen
 
-### Option A: C + wlroots (wie Sway)
-- Pro: Maximum Performance, direkte wlroots API
-- Con: C ist fehleranfällig, langsame Entwicklung
-- Referenz: [tinywl](https://gitlab.freedesktop.org/wlroots/wlroots/-/tree/master/tinywl)
-
-### Option B: Rust + smithay
-- Pro: Memory Safety, moderne Sprache
-- Con: Smithay weniger ausgereift als wlroots
-- Referenz: [smithay](https://github.com/Smithay/smithay)
-
-### Option C: Cage-Fork (Kiosk-Compositor)
-- Pro: Minimaler Aufwand, Cage ist ~1500 Zeilen C
-- Con: Limitiert auf Single-Window Kiosk
-- Referenz: [cage](https://github.com/cage-kiosk/cage)
-
-### Option D: wlr-randr + Sway + IPC (Quick Win)
+### Option A: Sway + IPC (Quick Win für Phase 2)
 - Pro: Sway existiert, hat IPC, wir steuern es remote
 - Con: Nicht unser Compositor, limitierte Kontrolle
-- Referenz: [sway IPC](https://github.com/swaywm/sway/wiki/IPC-protocol)
+- **Empfohlen für Phase 2**
 
-**Empfehlung Phase 2:** Option D (Sway + IPC) als Quick Win, dann Option B (Rust + smithay) für Phase 3.
+### Option B: Rust + smithay (Phase 3)
+- Pro: Memory Safety, volle Kontrolle
+- Con: Mehr Aufwand
+- **Empfohlen für Phase 3**
+
+### Option C: C + wlroots (wie Sway)
+- Pro: Maximum Performance
+- Con: C ist fehleranfällig
+
+### Option D: Cage-Fork (Kiosk-only)
+- Pro: Minimal (~1500 Zeilen)
+- Con: Single-Window, kein Multi-App
 
 ## D-Bus Interface
 
 ```xml
 <!-- org.openplank.Compositor -->
 <interface name="org.openplank.Compositor">
-    <method name="CreateWidget">
+    <!-- Window Management -->
+    <method name="CreateSurface">
         <arg type="s" name="widgetId" direction="in"/>
-        <arg type="s" name="widgetType" direction="in"/>
-        <arg type="(iiii)" name="geometry" direction="in"/> <!-- x, y, w, h -->
-        <arg type="s" name="renderTarget" direction="in"/>
+        <arg type="(iiii)" name="geometry" direction="in"/>
+        <arg type="s" name="viewport" direction="in"/>
     </method>
-    <method name="MoveWidget">
+    <method name="MoveSurface">
         <arg type="s" name="widgetId" direction="in"/>
         <arg type="(ii)" name="position" direction="in"/>
     </method>
-    <method name="FocusWidget">
+    <method name="ResizeSurface">
+        <arg type="s" name="widgetId" direction="in"/>
+        <arg type="(ii)" name="size" direction="in"/>
+    </method>
+    <method name="FocusSurface">
         <arg type="s" name="widgetId" direction="in"/>
     </method>
+    <method name="CloseSurface">
+        <arg type="s" name="widgetId" direction="in"/>
+    </method>
+    
+    <!-- Layout -->
     <method name="SetLayout">
         <arg type="s" name="layoutJson" direction="in"/>
     </method>
-    <signal name="WidgetClosed">
+    <method name="SplitView">
+        <arg type="s" name="widgetId" direction="in"/>
+        <arg type="s" name="direction" direction="in"/>
+    </method>
+    
+    <!-- Viewport -->
+    <method name="MoveToViewport">
+        <arg type="s" name="widgetId" direction="in"/>
+        <arg type="s" name="viewport" direction="in"/>
+    </method>
+    <method name="ListViewports">
+        <arg type="s" name="viewportsJson" direction="out"/>
+    </method>
+
+    <!-- Signals -->
+    <signal name="SurfaceCreated">
         <arg type="s" name="widgetId"/>
+    </signal>
+    <signal name="SurfaceClosed">
+        <arg type="s" name="widgetId"/>
+    </signal>
+    <signal name="ViewportConnected">
+        <arg type="s" name="viewportId"/>
     </signal>
 </interface>
 ```
