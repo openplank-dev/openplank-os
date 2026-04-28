@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-DE Desktop</title>
+    <link rel="stylesheet" href="desktop.css">
+</head>
+<body>
+    <div id="desktop">
+        <!-- Desktop Background -->
+        <div id="desktop-bg"></div>
+        
+        <!-- Desktop Icons -->
+        <div id="desktop-icons">
+            <div class="desktop-icon" data-app="terminal">
+                <div class="icon">💻</div>
+                <span>Terminal</span>
+            </div>
+            <div class="desktop-icon" data-app="files">
+                <div class="icon">📁</div>
+                <span>Dateien</span>
+            </div>
+            <div class="desktop-icon" data-app="browser">
+                <div class="icon">🌐</div>
+                <span>Browser</span>
+            </div>
+            <div class="desktop-icon" data-app="settings">
+                <div class="icon">⚙️</div>
+                <span>Einstellungen</span>
+            </div>
+            <div class="desktop-icon" data-app="editor">
+                <div class="icon">📝</div>
+                <span>Editor</span>
+            </div>
+        </div>
+        
+        <!-- Window Container -->
+        <div id="window-container"></div>
+        
+        <!-- Command Bar (Spotlight) -->
+        <div id="command-bar" class="hidden">
+            <div class="command-bar-overlay"></div>
+            <div class="command-bar-content">
+                <input type="text" id="command-input" placeholder="Befehl eingeben..." autocomplete="off">
+                <div id="command-suggestions"></div>
+            </div>
+        </div>
+        
+        <!-- App Launcher -->
+        <div id="app-launcher" class="hidden">
+            <div class="launcher-overlay"></div>
+            <div class="launcher-content">
+                <div class="launcher-header">
+                    <input type="text" id="launcher-search" placeholder="Apps suchen...">
+                </div>
+                <div class="launcher-grid" id="launcher-grid"></div>
+            </div>
+        </div>
+        
+        <!-- Notification Panel -->
+        <div id="notification-panel" class="hidden">
+            <div class="notification-header">
+                <span>Benachrichtigungen</span>
+                <button id="clear-notifications">🗑️</button>
+            </div>
+            <div id="notification-list"></div>
+        </div>
+        
+        <!-- Taskbar -->
+        <div id="taskbar">
+            <div class="taskbar-left">
+                <button id="launcher-btn" class="taskbar-btn" title="App Launcher">
+                    <span class="kide-logo">◆</span>
+                </button>
+                <div id="taskbar-apps"></div>
+            </div>
+            <div class="taskbar-center">
+                <div id="active-window-title"></div>
+            </div>
+            <div class="taskbar-right">
+                <button id="notifications-btn" class="taskbar-btn" title="Benachrichtigungen">
+                    🔔
+                    <span id="notification-badge" class="badge hidden">0</span>
+                </button>
+                <button id="theme-btn" class="taskbar-btn" title="Theme wechseln">🌙</button>
+                <div id="system-tray">
+                    <span id="network-icon">📶</span>
+                    <span id="volume-icon">🔊</span>
+                    <span id="battery-icon">🔋</span>
+                </div>
+                <div id="clock">
+                    <span id="time">00:00</span>
+                    <span id="date">01.01.2024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="desktop.js"></script>
+</body>
+</html>

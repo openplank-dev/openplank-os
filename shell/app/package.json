@@ -1,0 +1,11 @@
+{
+  "name": "kide-desktop",
+  "version": "1.0.0",
+  "description": "KI-DE Desktop Shell - Web-basiertes Desktop Environment",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "serve": "npx serve . -p 3000"
+  },
+  "keywords": ["desktop", "shell", "kide", "openplank"],
+  "license": "MIT"
+}

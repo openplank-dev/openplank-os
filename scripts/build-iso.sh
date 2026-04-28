@@ -63,6 +63,14 @@ if [ -d "$ISO_DIR/branding" ]; then
     cp -r "$ISO_DIR/branding/"* config/includes.chroot/opt/openplank-os-branding/
 fi
 
+# Copy Shell App
+if [ -d "$ROOT_DIR/shell/app" ]; then
+    echo "📦 Kopiere KI-DE Shell App..."
+    mkdir -p config/includes.chroot/opt/kide
+    cp -r "$ROOT_DIR/shell/app/"* config/includes.chroot/opt/kide/
+    chmod -R 755 config/includes.chroot/opt/kide
+fi
+
 # Build
 echo ""
 echo "🔨 Baue ISO... (das dauert 15-30 Minuten)"
