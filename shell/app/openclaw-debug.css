@@ -1,0 +1,601 @@
+/**
+ * KI-DE — OpenClaw Debug System Styles
+ * Dark-by-default debugging theme (like Chrome DevTools)
+ */
+
+/* ============================================
+   Debug Theme Tokens
+   ============================================ */
+.debug-app {
+    --debug-bg: #1a1a2e;
+    --debug-bg-deep: #0f0f1a;
+    --debug-surface: #222240;
+    --debug-surface-hover: #2a2a4a;
+    --debug-border: #333358;
+    --debug-text: #e0e0f0;
+    --debug-text-dim: #8888aa;
+    --debug-accent: #5B9AA0;
+    --debug-accent-light: #7bc0c7;
+    --debug-success: #10B981;
+    --debug-warn: #F59E0B;
+    --debug-error: #EF4444;
+    --debug-info: #3B82F6;
+    --debug-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+    display: flex;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--debug-text);
+    background: var(--debug-bg);
+    overflow: hidden;
+}
+
+
+/* ============================================
+   Sidebar
+   ============================================ */
+.debug-sidebar {
+    width: 180px;
+    min-width: 180px;
+    background: var(--debug-bg-deep);
+    border-right: 1px solid var(--debug-border);
+    padding: 8px 0;
+    overflow-y: auto;
+}
+
+.debug-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13px;
+    color: var(--debug-text-dim);
+    user-select: none;
+}
+
+.debug-nav-item:hover {
+    background: var(--debug-surface-hover);
+    color: var(--debug-text);
+}
+
+.debug-nav-item.active {
+    background: var(--debug-surface);
+    color: var(--debug-accent-light);
+    border-left: 2px solid var(--debug-accent);
+}
+
+.debug-nav-icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+}
+
+
+/* ============================================
+   Content Area
+   ============================================ */
+.debug-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.debug-tab {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px;
+    gap: 12px;
+}
+
+.debug-tab.active {
+    display: flex;
+}
+
+.debug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--debug-border);
+    flex-shrink: 0;
+}
+
+.debug-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--debug-text);
+    margin: 0;
+}
+
+.debug-header h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.debug-section {
+    margin-top: 8px;
+}
+
+.debug-section h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--debug-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px 0;
+}
+
+
+/* ============================================
+   Connection Status
+   ============================================ */
+.debug-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.debug-dot.connected { background: var(--debug-success); box-shadow: 0 0 6px var(--debug-success); }
+.debug-dot.disconnected { background: var(--debug-error); }
+.debug-dot.connecting { background: var(--debug-warn); animation: pulse 1s infinite; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.debug-connection {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.debug-connect-form {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: var(--debug-surface);
+    border-radius: 8px;
+    border: 1px solid var(--debug-border);
+}
+
+
+/* ============================================
+   Inputs & Buttons
+   ============================================ */
+.debug-input {
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    color: var(--debug-text);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+    flex: 1;
+    outline: none;
+}
+
+.debug-input:focus {
+    border-color: var(--debug-accent);
+    box-shadow: 0 0 0 2px rgba(91, 154, 160, 0.2);
+}
+
+.debug-select {
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    color: var(--debug-text);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.debug-btn {
+    background: var(--debug-surface);
+    border: 1px solid var(--debug-border);
+    color: var(--debug-text-dim);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+}
+
+.debug-btn:hover {
+    background: var(--debug-surface-hover);
+    color: var(--debug-text);
+}
+
+.debug-btn-primary {
+    background: var(--debug-accent);
+    border: none;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.15s;
+}
+
+.debug-btn-primary:hover {
+    opacity: 0.85;
+}
+
+
+/* ============================================
+   Metric Grid (Overview)
+   ============================================ */
+.debug-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+}
+
+.debug-metric-card {
+    background: var(--debug-surface);
+    border: 1px solid var(--debug-border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.debug-metric-label {
+    font-size: 11px;
+    color: var(--debug-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.debug-metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--debug-accent-light);
+    font-family: var(--debug-mono);
+    margin-top: 4px;
+}
+
+
+/* ============================================
+   Logs
+   ============================================ */
+.debug-log-container {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    font-family: var(--debug-mono);
+    font-size: 12px;
+    min-height: 200px;
+}
+
+.debug-log-row {
+    display: flex;
+    gap: 8px;
+    padding: 3px 10px;
+    border-bottom: 1px solid rgba(51, 51, 88, 0.3);
+    align-items: baseline;
+}
+
+.debug-log-row:hover {
+    background: var(--debug-surface-hover);
+}
+
+.debug-log-time {
+    color: var(--debug-text-dim);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.debug-log-source {
+    min-width: 80px;
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.debug-log-msg {
+    color: var(--debug-text);
+    word-break: break-word;
+}
+
+.debug-log-error .debug-log-msg { color: var(--debug-error); }
+.debug-log-warn .debug-log-msg { color: var(--debug-warn); }
+.debug-log-success .debug-log-msg { color: var(--debug-success); }
+
+
+/* ============================================
+   Sessions
+   ============================================ */
+.debug-sessions-list {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.debug-session-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--debug-border);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.debug-session-row:hover {
+    background: var(--debug-surface-hover);
+}
+
+.debug-session-detail {
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+}
+
+.debug-chat {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--debug-bg-deep);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.debug-chat-msg {
+    display: flex;
+    gap: 8px;
+    padding: 6px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.debug-chat-user {
+    background: rgba(91, 154, 160, 0.1);
+}
+
+.debug-chat-assistant {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.debug-session-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.debug-empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--debug-text-dim);
+    font-style: italic;
+}
+
+
+/* ============================================
+   Scene Graph Tree
+   ============================================ */
+.debug-scene-tree {
+    overflow-y: auto;
+    max-height: 300px;
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.debug-tree-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+    font-size: 13px;
+}
+
+.debug-tree-node:hover {
+    background: var(--debug-surface-hover);
+}
+
+.debug-tree-child {
+    padding-left: 24px;
+}
+
+.debug-tree-icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+}
+
+.debug-tree-label {
+    font-weight: 500;
+}
+
+.debug-tree-meta {
+    color: var(--debug-text-dim);
+    font-family: var(--debug-mono);
+    font-size: 11px;
+}
+
+.debug-tree-badge {
+    background: var(--debug-accent);
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.debug-tree-focus {
+    background: var(--debug-success);
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+
+/* ============================================
+   Code / JSON Viewer
+   ============================================ */
+.debug-code {
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: var(--debug-mono);
+    font-size: 12px;
+    color: var(--debug-accent-light);
+    overflow: auto;
+    white-space: pre-wrap;
+    max-height: 300px;
+    margin: 0;
+}
+
+.debug-config-view {
+    max-height: 600px;
+}
+
+
+/* ============================================
+   Performance
+   ============================================ */
+.debug-cmd-row {
+    padding: 3px 0;
+    font-family: var(--debug-mono);
+    font-size: 12px;
+    border-bottom: 1px solid rgba(51, 51, 88, 0.3);
+}
+
+.debug-cmd-row code {
+    color: var(--debug-accent-light);
+}
+
+
+/* ============================================
+   Network
+   ============================================ */
+.debug-key-value {
+    background: var(--debug-surface);
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.debug-kv-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--debug-border);
+    font-size: 13px;
+}
+
+.debug-kv-row:last-child {
+    border-bottom: none;
+}
+
+.debug-kv-row span:first-child {
+    color: var(--debug-text-dim);
+}
+
+
+/* ============================================
+   Console
+   ============================================ */
+.debug-console-output {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    padding: 8px;
+    font-family: var(--debug-mono);
+    font-size: 12px;
+    min-height: 200px;
+}
+
+.debug-console-line {
+    padding: 2px 0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.debug-console-cmd {
+    color: var(--debug-text);
+}
+
+.debug-console-result {
+    color: var(--debug-accent-light);
+}
+
+.debug-console-error {
+    color: var(--debug-error);
+}
+
+.debug-console-input-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+.debug-prompt {
+    color: var(--debug-accent);
+    font-family: var(--debug-mono);
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.debug-console-in {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 4px 0 !important;
+}
+
+.debug-console-in:focus {
+    box-shadow: none !important;
+}
+
+
+/* ============================================
+   Event List
+   ============================================ */
+.debug-event-list {
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--debug-bg-deep);
+    border: 1px solid var(--debug-border);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 600px) {
+    .debug-sidebar {
+        width: 48px;
+        min-width: 48px;
+    }
+    .debug-nav-item span:last-child {
+        display: none;
+    }
+    .debug-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

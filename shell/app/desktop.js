@@ -307,11 +307,11 @@ Type 'help' für verfügbare Befehle.</div>
                     const output = container.querySelector('.terminal-output');
                     
                     const commands = {
-                        help: () => 'Verfügbare Befehle:\n  help      - Diese Hilfe\n  clear     - Terminal leeren\n  date      - Aktuelles Datum\n  whoami    - Aktueller Benutzer\n  uname     - Systeminformationen\n  echo      - Text ausgeben\n  calc      - Rechner (z.B. calc 2+2)\n  about     - Über KI-DE',
+                        help: () => 'Verfügbare Befehle:\n  help      - Diese Hilfe\n  clear     - Terminal leeren\n  date      - Aktuelles Datum\n  whoami    - Aktueller Benutzer\n  uname     - Systeminformationen\n  echo      - Text ausgeben\n  calc      - Rechner (z.B. calc 2+2)\n  about     - Über KI-DE\n  debug     - Debug-Tool öffnen\n  oc        - OpenClaw Status\n  scene     - Scene Graph anzeigen\n  windows   - Offene Fenster\n  open      - App öffnen (z.B. open browser)',
                         clear: () => { output.innerHTML = ''; return ''; },
                         date: () => new Date().toLocaleString('de-DE'),
                         whoami: () => 'user',
-                        uname: () => 'KI-DE OS v1.0 (openPlank)',
+                        uname: () => 'KI-DE OS v1.0 (openPlank)\nKernel: Linux 6.x kide\nArch: x86_64\nDesktop: KI-DE Phase 1 (Chromium Kiosk)\nOpenClaw: ' + (OpenClaw.connected ? 'Verbunden' : 'Nicht verbunden'),
                         echo: (args) => args.join(' '),
                         calc: (args) => {
                             try {
@@ -320,7 +320,32 @@ Type 'help' für verfügbare Befehle.</div>
                                 return 'Fehler: Ungültiger Ausdruck';
                             }
                         },
-                        about: () => 'KI-DE Desktop Environment v1.0\nEin Projekt von openPlank OS'
+                        about: () => 'KI-DE Desktop Environment v1.0\nEin Projekt von openPlank OS\nOpenClaw: ' + (OpenClaw.connected ? '✅ Verbunden' : '❌ Nicht verbunden'),
+                        debug: () => { openApp('debug'); return '🔧 Debug-Tool geöffnet'; },
+                        oc: () => {
+                            if (!OpenClaw.connected) return '❌ OpenClaw nicht verbunden\nVerbinde über Debug-App (F12)';
+                            return '✅ OpenClaw Gateway: ' + OpenClaw.gateway.url
+                                + '\nSessions: ' + OpenClaw.sessions.length
+                                + '\nErrors: ' + OpenClaw.metrics.errors.length
+                                + '\nLogs: ' + OpenClaw.logs.length;
+                        },
+                        scene: () => {
+                            const wins = [...Desktop.windows.values()];
+                            return 'Scene Graph — ' + wins.length + ' Fenster:\n' + wins.map(w =>
+                                '  ' + w.icon + ' ' + w.title + ' [' + w.id + '] ' +
+                                (w.minimized ? '(minimiert)' : w.maximized ? '(maximiert)' : Math.round(w.x)+','+Math.round(w.y)+' '+w.width+'×'+w.height)
+                            ).join('\n');
+                        },
+                        windows: () => {
+                            const wins = [...Desktop.windows.values()];
+                            if (!wins.length) return 'Keine offenen Fenster';
+                            return wins.map(w => w.id + '  ' + w.icon + ' ' + w.title).join('\n');
+                        },
+                        open: (args) => {
+                            const appId = args[0];
+                            if (Desktop.apps[appId]) { openApp(appId); return '✅ ' + Desktop.apps[appId].name + ' geöffnet'; }
+                            return 'Unbekannte App: ' + (appId || '?') + '\nVerfügbar: ' + Object.keys(Desktop.apps).join(', ');
+                        }
                     };
                     
                     input.addEventListener('keydown', (e) => {
@@ -489,6 +514,11 @@ Type 'help' für verfügbare Befehle.</div>
                 <textarea class="editor-textarea" placeholder="Beginne zu tippen..."></textarea>
             </div>
         `;
+    },
+
+    debug() {
+        // OpenClaw Debug System — tief verankertes Diagnose-Tool
+        return buildDebugApp();
     }
 };
 
@@ -500,7 +530,19 @@ function openApp(appId) {
     if (!app) return;
     
     const content = AppContent[appId] ? AppContent[appId]() : '<div style="padding:40px;text-align:center">🚧 App in Entwicklung</div>';
-    new Window(appId, app.name, app.icon, content);
+    const win = new Window(appId, app.name, app.icon, content);
+    
+    // Debug app: open larger
+    if (appId === 'debug' && win.element) {
+        win.width = Math.min(1100, window.innerWidth - 80);
+        win.height = Math.min(700, window.innerHeight - 120);
+        win.x = Math.max(20, (window.innerWidth - win.width) / 2);
+        win.y = Math.max(20, (window.innerHeight - win.height) / 2 - 30);
+        win.element.style.width = win.width + 'px';
+        win.element.style.height = win.height + 'px';
+        win.element.style.left = win.x + 'px';
+        win.element.style.top = win.y + 'px';
+    }
     
     // Close launcher if open
     document.getElementById('app-launcher').classList.add('hidden');
@@ -693,6 +735,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.code === 'Escape') {
             hideCommandBar();
             hideLauncher();
+        }
+        // F12 or Ctrl+Shift+D: Open Debug
+        if (e.code === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyD')) {
+            e.preventDefault();
+            openApp('debug');
         }
     });
     
